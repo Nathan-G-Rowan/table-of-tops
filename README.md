@@ -1,3 +1,6 @@
 # Northcoders House of Games API
 
-If cloning this repo with the intent to run, you must create two .env files for this project: .env.test and .env.development. Into each, add PGDATABASE=<database_name_here>, with the correct database name for that environment (see /db/setup.sql for the database names). The .gitignore should already contain these files, please double check that these .env files are in .gitignore.
+If cloning this repo with the intent to run, you must create two .env files for this project:
+.env.test: PGDATABASE=nc_games_test
+.env.development: PGDATABASE=nc_games
+The .gitignore should already contain these files, please double check that these .env files are in .gitignore.
