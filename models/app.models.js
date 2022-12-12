@@ -23,4 +23,3 @@ exports.selectReviews = () => {
   ;`;
   return db.query(reviewSQLStr).then((reviews) => reviews.rows);
 };
-
