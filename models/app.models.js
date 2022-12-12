@@ -11,7 +11,10 @@ exports.selectReviews = () => {
   let reviewSQLStr = `
     SELECT
       reviews.*,
-      COUNT(comments.comment_id) AS comment_count
+      CAST( 
+        COUNT(comments.comment_id)
+        AS int)
+        AS comment_count
     FROM reviews
     LEFT JOIN comments
       ON comments.review_id = reviews.review_id
