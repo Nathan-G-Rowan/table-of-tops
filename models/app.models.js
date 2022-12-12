@@ -23,3 +23,10 @@ exports.selectReviews = () => {
   ;`;
   return db.query(reviewSQLStr).then((reviews) => reviews.rows);
 };
+
+exports.selectReviewById = (id) => {
+  let reviewSQLStr = `
+    SELECT * FROM reviews
+  ;`;
+  return db.query(reviewSQLStr).then((reviews) => reviews.rows);
+};
