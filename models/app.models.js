@@ -8,3 +8,4 @@ exports.selectCategories = () => {
     return categories.rows;
   });
 };
+
