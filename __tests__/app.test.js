@@ -39,4 +39,44 @@ describe("GET /api/categories", () => {
   });
 });
 
+describe("GET /api/reviews", () => {
+  test("200: retrieves list of reviews from database", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body: { reviews } }) => {
+        expect(reviews).toHaveLength(13);
 
+        reviews.forEach((review) => {
+          expect(review).toEqual(
+            expect.objectContaining({
+              owner: expect.any(String),
+              title: expect.any(String),
+              review_id: expect.any(Number),
+              category: expect.any(String),
+              review_img_url: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              designer: expect.any(String),
+              comment_count: expect.any(Number),
+            })
+          );
+
+          const id = review.review_id;
+          const commentCount = review.comment_count;
+          if (id == 2 || id == 3) expect(commentCount == 3);
+          else expect(commentCount == 0);
+        });
+      });
+  });
+  test("200: reviews are sorted by newest first", () => {
+    return request(app)
+      .get("/api/reviews")
+      .then(({ body: { reviews } }) => {
+        expect(reviews).toBeSortedBy(reviews.created_at, {
+          descending: true,
+          coerce: true,
+        });
+      });
+  });
+});
