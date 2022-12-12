@@ -17,3 +17,27 @@ describe("undefined paths", () => {
       });
   });
 });
+
+describe("GET /api/categories", () => {
+  test("200: retrieves categories", () => {
+    return request(app)
+      .get("/api/categories")
+      .expect(200)
+
+      .then(({ body: { categories } }) => {
+        expect(categories).toBeInstanceOf(Array);
+        expect(categories).toHaveLength(4);
+
+        categories.forEach((category) => {
+          expect(category).toEqual(
+            expect.objectContaining({
+              slug: expect.any(String),
+              description: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+});
+
+
