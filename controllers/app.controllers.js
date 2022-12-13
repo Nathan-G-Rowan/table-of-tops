@@ -23,3 +23,11 @@ exports.getReviewById = (request, response, next) => {
     })
     .catch(next);
 };
+
+exports.getCommentsByReviewId = (request, response, next) => {
+  selectCommentsByReviewId(request.params.review_id)
+    .then((review) => {
+      response.status(200).send({ review });
+    })
+    .catch(next);
+};
