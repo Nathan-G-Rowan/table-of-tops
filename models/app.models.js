@@ -44,3 +44,17 @@ exports.selectCommentsByReviewId = (id) => {
   ;`;
   return db.query(reviewSQLStr, [id]).then((comments) => comments.rows);
 };
+
+exports.insertComment = (id, postBody) => {
+  const commentTime = new Date(Date.now());
+
+  let commentInsertSQLStr = `
+    INSERT INTO comments (body, author, review_id, votes, created_at)
+    VALUES ($1, $2, $3, $4, $5) RETURNING *
+  ;`;
+  inputArr = [postBody.body, postBody.username, id, 0, commentTime];
+
+  return db
+    .query(commentInsertSQLStr, inputArr)
+    .then((comments) => comments.rows[0]);
+};
