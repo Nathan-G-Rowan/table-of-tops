@@ -36,3 +36,11 @@ exports.selectReviewById = (id) => {
     return reviews.rows[0];
   });
 };
+
+exports.selectCommentsByReviewId = (id) => {
+  let reviewSQLStr = `
+    SELECT * FROM comments
+    WHERE review_id = $1
+  ;`;
+  return db.query(reviewSQLStr, [id]).then((comments) => comments.rows);
+};

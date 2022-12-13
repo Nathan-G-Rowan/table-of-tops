@@ -2,6 +2,7 @@ const {
   selectCategories,
   selectReviews,
   selectReviewById,
+  selectCommentsByReviewId,
 } = require("../models/app.models");
 
 exports.getCategories = (request, response, next) => {
@@ -25,9 +26,15 @@ exports.getReviewById = (request, response, next) => {
 };
 
 exports.getCommentsByReviewId = (request, response, next) => {
-  selectCommentsByReviewId(request.params.review_id)
-    .then((review) => {
-      response.status(200).send({ review });
+  const reviewId = request.params.review_id;
+
+  const promises = [];
+  promises.push(selectReviewById(reviewId));
+  promises.push(selectCommentsByReviewId(reviewId));
+
+  Promise.all(promises)
+    .then(([review, comments]) => {
+      response.status(200).send({ comments });
     })
     .catch(next);
 };

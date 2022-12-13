@@ -131,14 +131,30 @@ describe("GET /api/reviews/:review_id/comments", () => {
           expect(comment).toEqual(
             expect.objectContaining({
               comment_id: expect.any(Number),
-              votes: expect.any(Number),
-              created_at: expect.any(Date),
-              author: expect.any(String),
               body: expect.any(String),
-              review_id: expect.any(Number),
+              review_id: 2,
+              author: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
             })
           );
         });
+      });
+  });
+  test("400: review_id is of wrong type", () => {
+    return request(app)
+      .get("/api/reviews/sponge/comments")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("bad request");
+      });
+  });
+  test("404: review_id not present", () => {
+    return request(app)
+      .get("/api/reviews/-1/comments")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("not found");
       });
   });
 });
