@@ -13,7 +13,7 @@ describe("undefined paths", () => {
       .get("/beApi")
       .expect(404)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Path not Found!");
+        expect(msg).toBe("path not found");
       });
   });
 });
@@ -81,4 +81,40 @@ describe("GET /api/reviews", () => {
   });
 });
 
-describe("GET /api/reviews/:review_id", () => {});
+describe("GET /api/reviews/:review_id", () => {
+  test("200: retrieves reviews from valid id", () => {
+    return request(app)
+      .get("/api/reviews/2")
+      .expect(200)
+      .then(({ body: { review } }) => {
+        expect(review).toEqual(
+          expect.objectContaining({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+          })
+        );
+      });
+  });
+  test("400: review id is not of a correct type", () => {
+    return request(app)
+      .get("/api/reviews/sponge")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("bad request");
+      });
+  });
+  test("404: review id not found", () => {
+    return request(app)
+      .get("/api/reviews/-1")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("not found");
+      });
+  });
+});

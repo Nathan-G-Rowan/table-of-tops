@@ -6,7 +6,9 @@ const {
 } = require("./controllers/app.controllers");
 const {
   handle404Paths,
-  handle500Paths,
+  handleCustomError,
+  handleSQLError,
+  handle500Error,
 } = require("./controllers/error.controllers");
 
 const app = express();
@@ -18,6 +20,8 @@ app.get("/api/reviews/:review_id", getReviewById);
 
 app.all("*", handle404Paths);
 
-app.use(handle500Paths);
+app.use(handleCustomError);
+app.use(handleSQLError);
+app.use(handle500Error);
 
 module.exports = app;

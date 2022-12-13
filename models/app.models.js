@@ -27,6 +27,12 @@ exports.selectReviews = () => {
 exports.selectReviewById = (id) => {
   let reviewSQLStr = `
     SELECT * FROM reviews
+    WHERE review_id = $1
   ;`;
-  return db.query(reviewSQLStr).then((reviews) => reviews.rows);
+  return db.query(reviewSQLStr, [id]).then((reviews) => {
+    if (reviews.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "not found" });
+    }
+    return reviews.rows[0];
+  });
 };
