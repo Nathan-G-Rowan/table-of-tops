@@ -25,6 +25,10 @@ exports.getReviewById = (request, response, next) => {
     .catch(next);
 };
 
+exports.patchReview = (request, response, next) => {
+  
+};
+
 exports.getCommentsByReviewId = (request, response, next) => {
   const reviewId = request.params.review_id;
 

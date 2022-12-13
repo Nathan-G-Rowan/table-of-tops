@@ -160,5 +160,5 @@ describe("GET /api/reviews/:review_id/comments", () => {
 });
 
 describe("PATCH /api/reviews/:review_id", ()=> {
-  
+  test("200: review is updated successfully")
 })
