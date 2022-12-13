@@ -80,7 +80,6 @@ describe("GET /api/reviews", () => {
       });
   });
 });
-
 describe("GET /api/reviews/:review_id", () => {
   test("200: retrieves reviews from valid id", () => {
     return request(app)
@@ -118,7 +117,6 @@ describe("GET /api/reviews/:review_id", () => {
       });
   });
 });
-
 describe("GET /api/reviews/:review_id/comments", () => {
   test("200: retrieves list of comments from specified review", () => {
     return request(app)
@@ -155,6 +153,52 @@ describe("GET /api/reviews/:review_id/comments", () => {
       .expect(404)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("not found");
+      });
+  });
+});
+describe.only("POST /api/reviews/:review_id/comments", () => {
+  test("201: successfully posted new comment to review", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .expect(201)
+      .send({
+        body: "Can't stand this game.",
+        username: "dav3rid",
+      })
+      .then(({ body: { comment } }) => {
+        console.log(comment);
+        expect(comment).toEqual({
+          comment_id: 7,
+          body: "Can't stand this game.",
+          review_id: 1,
+          author: "dav3rid",
+          votes: 0,
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test("400: attempted to make comment on non existent review_id", () => {
+    return request(app)
+      .post("/api/reviews/-1/comments")
+      .expect(400)
+      .send({
+        body: "Can't stand this game.",
+        username: "dav3rid",
+      })
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("bad request");
+      });
+  });
+  test("400: non-existing username", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .expect(400)
+      .send({
+        body: "Can't stand this game.",
+        username: "toastghoast",
+      })
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("bad request");
       });
   });
 });
