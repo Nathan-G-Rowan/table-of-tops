@@ -1,12 +1,17 @@
 const express = require("express");
 const {
   getCategories,
+
   getReviews,
   getReviewById,
+  patchReview,
+
   getCommentsByReviewId,
+  postComment,
 } = require("./controllers/app.controllers");
 const {
   handle404Paths,
+  
   handleCustomError,
   handleSQLError,
   handle500Error,
@@ -19,6 +24,8 @@ app.get("/api/categories", getCategories);
 
 app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:review_id", getReviewById);
+app.patch("/api/reviews/:review_id", patchReview);
+
 app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
 app.post("/api/reviews/:review_id/comments", postComment);
 

@@ -1,7 +1,10 @@
 const {
   selectCategories,
+
   selectReviews,
   selectReviewById,
+  updateReview,
+
   selectCommentsByReviewId,
   insertComment,
 } = require("../models/app.models");
@@ -17,7 +20,6 @@ exports.getReviews = (request, response, next) => {
     response.status(200).send({ reviews });
   });
 };
-
 exports.getReviewById = (request, response, next) => {
   selectReviewById(request.params.review_id)
     .then((review) => {
@@ -25,9 +27,12 @@ exports.getReviewById = (request, response, next) => {
     })
     .catch(next);
 };
-
 exports.patchReview = (request, response, next) => {
-  
+  updateReview(request.params.review_id, request.body.inc_votes)
+    .then((review) => {
+      response.status(200).send({ review });
+    })
+    .catch(next);
 };
 
 exports.getCommentsByReviewId = (request, response, next) => {
@@ -43,7 +48,6 @@ exports.getCommentsByReviewId = (request, response, next) => {
     })
     .catch(next);
 };
-
 exports.postComment = (request, response, next) => {
   const reviewId = request.params.review_id;
 

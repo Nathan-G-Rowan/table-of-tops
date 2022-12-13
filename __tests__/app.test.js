@@ -117,6 +117,36 @@ describe("GET /api/reviews/:review_id", () => {
       });
   });
 });
+describe("PATCH /api/reviews/:review_id", () => {
+  test("200: review is updated successfully", () => {
+    return request(app)
+      .patch("/api/reviews/1")
+      .expect(200)
+      .send({ inc_votes: 4 })
+      .then(({ body: { review } }) => {
+        expect(review.votes).toEqual(5)
+      });
+  });
+  test("404: review not found", () => {
+    return request(app)
+      .patch("/api/reviews/-1")
+      .expect(404)
+      .send({ inc_votes: 4 })
+      .then(({ body: { msg } }) => {
+          expect(msg).toBe("not found");
+      });
+  });
+  test("400: request object missing inc_votes", () => {
+    return request(app)
+      .patch("/api/reviews/-1")
+      .expect(400)
+      .send({ inc_otes: 4 })
+      .then(({ body: { msg } }) => {
+          expect(msg).toBe("bad request");
+      });
+  });
+});
+
 describe("GET /api/reviews/:review_id/comments", () => {
   test("200: retrieves list of comments from specified review", () => {
     return request(app)
@@ -166,7 +196,6 @@ describe("POST /api/reviews/:review_id/comments", () => {
         username: "dav3rid",
       })
       .then(({ body: { comment } }) => {
-        console.log(comment);
         expect(comment).toEqual({
           comment_id: 7,
           body: "Can't stand this game.",
@@ -202,7 +231,3 @@ describe("POST /api/reviews/:review_id/comments", () => {
       });
   });
 });
-
-describe("PATCH /api/reviews/:review_id", ()=> {
-  test("200: review is updated successfully")
-})
