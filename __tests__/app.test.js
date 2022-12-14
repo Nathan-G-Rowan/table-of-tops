@@ -145,6 +145,15 @@ describe("PATCH /api/reviews/:review_id", () => {
           expect(msg).toBe("bad request");
       });
   });
+  test("400: inc_votes of invalid type", () => {
+    return request(app)
+      .patch("/api/reviews/-1")
+      .expect(400)
+      .send({ inc_votes: "sponge" })
+      .then(({ body: { msg } }) => {
+          expect(msg).toBe("bad request");
+      });
+  });
 });
 
 describe("GET /api/reviews/:review_id/comments", () => {
