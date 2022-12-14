@@ -240,6 +240,14 @@ describe("POST /api/reviews/:review_id/comments", () => {
       });
   });
 });
+describe("DELETE /api/comments/comment_id", () => {
+  test("204: comment successfully deleted", () => {
+    return request(app).delete("/api/comments/2").expect(204);
+  });
+  test("404: comment id is not present", () => {
+    return request(app).delete("/api/comments/-1").expect(404);
+  });
+});
 
 describe("GET /api/users", () => {
   test("200: successfully responds with array of user objects", () => {

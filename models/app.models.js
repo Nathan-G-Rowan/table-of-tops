@@ -39,7 +39,7 @@ exports.selectReviewById = (id) => {
 };
 exports.updateReview = (id, incVotes) => {
   if (!incVotes) return Promise.reject(badRequestErrorObj);
-  
+
   let reviewSQLStr = `
     UPDATE reviews
     SET votes = votes + $1
@@ -72,6 +72,16 @@ exports.insertComment = (id, postBody) => {
     .query(commentInsertSQLStr, inputArr)
     .then((comments) => comments.rows[0]);
 };
+exports.deleteComment = (id) => {
+  let deleteCommentSQL = `
+  DELETE FROM comments
+  WHERE comment_id = $1
+  RETURNING *
+  ;`;
+  return db.query(deleteCommentSQL, [id]).then((removed) => {
+    if (removed.rows.length === 0) return Promise.reject(notFoundErrorObj);
+  });
+};
 
 exports.selectUsers = () => {
   let userSQLStr = `
@@ -79,5 +89,4 @@ exports.selectUsers = () => {
     FROM users
   ;`;
   return db.query(userSQLStr).then((users) => users.rows);
-
-}
+};

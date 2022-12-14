@@ -8,12 +8,13 @@ const {
 
   getCommentsByReviewId,
   postComment,
+  deleteCommentById,
 
-  getUsers
+  getUsers,
 } = require("./controllers/app.controllers");
 const {
   handle404Paths,
-  
+
   handleCustomError,
   handleSQLError,
   handle500Error,
@@ -30,8 +31,9 @@ app.patch("/api/reviews/:review_id", patchReview);
 
 app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
 app.post("/api/reviews/:review_id/comments", postComment);
+app.delete("/api/comments/:comment_id", deleteCommentById);
 
-app.get("/api/users", getUsers)
+app.get("/api/users", getUsers);
 
 app.all("*", handle404Paths);
 

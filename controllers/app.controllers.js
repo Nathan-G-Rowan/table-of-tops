@@ -7,15 +7,17 @@ const {
 
   selectCommentsByReviewId,
   insertComment,
+  deleteComment,
 
   selectUsers,
 } = require("../models/app.models");
 
 exports.getCategories = (request, response, next) => {
-  selectCategories().then((categories) => {
-    response.status(200).send({ categories });
-  })
-  .catch(next);
+  selectCategories()
+    .then((categories) => {
+      response.status(200).send({ categories });
+    })
+    .catch(next);
 };
 
 exports.getReviews = (request, response, next) => {
@@ -57,6 +59,13 @@ exports.postComment = (request, response, next) => {
   insertComment(reviewId, request.body)
     .then((comment) => {
       response.status(201).send({ comment });
+    })
+    .catch(next);
+};
+exports.deleteCommentById = (request, response, next) => {
+  deleteComment(request.params.comment_id)
+    .then(() => {
+      response.status(204).send();
     })
     .catch(next);
 };
