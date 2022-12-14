@@ -138,7 +138,7 @@ describe("PATCH /api/reviews/:review_id", () => {
   });
   test("400: request object missing inc_votes", () => {
     return request(app)
-      .patch("/api/reviews/-1")
+      .patch("/api/reviews/1")
       .expect(400)
       .send({ inc_otes: 4 })
       .then(({ body: { msg } }) => {
@@ -147,7 +147,7 @@ describe("PATCH /api/reviews/:review_id", () => {
   });
   test("400: inc_votes of invalid type", () => {
     return request(app)
-      .patch("/api/reviews/-1")
+      .patch("/api/reviews/1")
       .expect(400)
       .send({ inc_votes: "sponge" })
       .then(({ body: { msg } }) => {
