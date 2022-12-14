@@ -39,7 +39,7 @@ describe("GET /api/categories", () => {
   });
 });
 
-describe.only("GET /api/reviews", () => {
+describe("GET /api/reviews", () => {
   test("200: retrieves list of reviews from database", () => {
     return request(app)
       .get("/api/reviews")
@@ -80,18 +80,36 @@ describe.only("GET /api/reviews", () => {
         });
       });
   });
-  describe("Queries", () => {
+  describe.only("Queries", () => {
     describe("Category", () => {
       test("200: Filter by specified category", () => {
         return request(app)
-          .get("/api/reviews?category=euro game")
+          .get("/api/reviews?category=social deduction")
           .expect(200)
           .then(({ body: { reviews } }) => {
-            expect(reviews).toHaveLength(1);
-            console.log(reviews);
+            expect(reviews).toHaveLength(11);
             reviews.forEach((review) => {
-              expect(review.category).toBe("euro game");
+              expect(review.category).toBe("social deduction");
             });
+          });
+      });
+      test("200: does not allow SQL injection", () => {
+        return request(app)
+          .get("/api/reviews?category=euro game ;")
+          .expect(200)
+          .then(({ body: { reviews } }) => {
+            expect(reviews).toEqual([]);
+          });
+      });
+    });
+    describe("Sort_by", () => {
+      test("200: retrieves all reviews in order of specified column", () => {
+        return request(app)
+          .get("/api/reviews?sort_by=title")
+          .expect(200)
+          .then(({ body: { reviews } }) => {
+            console.log(reviews);
+            expect(reviews).toBeSorted({ key: 'title' });
           });
       });
     });

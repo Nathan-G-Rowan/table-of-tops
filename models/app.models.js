@@ -7,7 +7,7 @@ exports.selectCategories = () => {
   return db.query(categorySQLStr).then((categories) => categories.rows);
 };
 
-exports.selectReviews = (category) => {
+exports.selectReviews = (category, sort_by = "created_at") => {
   const argArr = [""];
   let args = 0;
 
