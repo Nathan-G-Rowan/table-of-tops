@@ -39,7 +39,7 @@ describe("GET /api/categories", () => {
   });
 });
 
-describe("GET /api/reviews", () => {
+describe.only("GET /api/reviews", () => {
   test("200: retrieves list of reviews from database", () => {
     return request(app)
       .get("/api/reviews")
@@ -69,9 +69,10 @@ describe("GET /api/reviews", () => {
         });
       });
   });
-  test("200: reviews are sorted by newest first", () => {
+  test("200: reviews are sorted by newest first by default", () => {
     return request(app)
       .get("/api/reviews")
+      .expect(200)
       .then(({ body: { reviews } }) => {
         expect(reviews).toBeSortedBy(reviews.created_at, {
           descending: true,
@@ -79,7 +80,24 @@ describe("GET /api/reviews", () => {
         });
       });
   });
+  describe("Queries", () => {
+    describe("Category", () => {
+      test("200: Filter by specified category", () => {
+        return request(app)
+          .get("/api/reviews?category=euro game")
+          .expect(200)
+          .then(({ body: { reviews } }) => {
+            expect(reviews).toHaveLength(1);
+            console.log(reviews);
+            reviews.forEach((review) => {
+              expect(review.category).toBe("euro game");
+            });
+          });
+      });
+    });
+  });
 });
+
 describe("GET /api/reviews/:review_id", () => {
   test("200: retrieves reviews from valid id", () => {
     return request(app)

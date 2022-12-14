@@ -13,9 +13,12 @@ exports.getCategories = (request, response, next) => {
 };
 
 exports.getReviews = (request, response, next) => {
-  selectReviews().then((reviews) => {
-    response.status(200).send({ reviews });
-  });
+  const categoryQuery = request.query.category;
+  selectReviews(categoryQuery)
+    .then((reviews) => {
+      response.status(200).send({ reviews });
+    })
+    .catch(next);
 };
 
 exports.getReviewById = (request, response, next) => {
