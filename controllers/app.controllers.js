@@ -14,7 +14,8 @@ const {
 exports.getCategories = (request, response, next) => {
   selectCategories().then((categories) => {
     response.status(200).send({ categories });
-  });
+  })
+  .catch(next);
 };
 
 exports.getReviews = (request, response, next) => {
