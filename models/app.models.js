@@ -72,3 +72,12 @@ exports.insertComment = (id, postBody) => {
     .query(commentInsertSQLStr, inputArr)
     .then((comments) => comments.rows[0]);
 };
+
+exports.selectUsers = () => {
+  let userSQLStr = `
+    SELECT * 
+    FROM users
+  ;`;
+  return db.query(userSQLStr).then((users) => users.rows);
+
+}

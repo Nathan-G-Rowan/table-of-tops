@@ -7,6 +7,8 @@ const {
 
   selectCommentsByReviewId,
   insertComment,
+
+  selectUsers
 } = require("../models/app.models");
 
 exports.getCategories = (request, response, next) => {
@@ -56,4 +58,10 @@ exports.postComment = (request, response, next) => {
       response.status(201).send({ comment });
     })
     .catch(next);
+};
+
+exports.getUsers = (request, response, next) => {
+  selectUsers().then((users) => {
+    response.status(200).send({ users });
+  });
 };

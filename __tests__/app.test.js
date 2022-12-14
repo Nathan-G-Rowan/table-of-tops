@@ -124,7 +124,7 @@ describe("PATCH /api/reviews/:review_id", () => {
       .expect(200)
       .send({ inc_votes: 4 })
       .then(({ body: { review } }) => {
-        expect(review.votes).toEqual(5)
+        expect(review.votes).toEqual(5);
       });
   });
   test("404: review not found", () => {
@@ -133,7 +133,7 @@ describe("PATCH /api/reviews/:review_id", () => {
       .expect(404)
       .send({ inc_votes: 4 })
       .then(({ body: { msg } }) => {
-          expect(msg).toBe("not found");
+        expect(msg).toBe("not found");
       });
   });
   test("400: request object missing inc_votes", () => {
@@ -142,7 +142,7 @@ describe("PATCH /api/reviews/:review_id", () => {
       .expect(400)
       .send({ inc_otes: 4 })
       .then(({ body: { msg } }) => {
-          expect(msg).toBe("bad request");
+        expect(msg).toBe("bad request");
       });
   });
   test("400: inc_votes of invalid type", () => {
@@ -151,7 +151,7 @@ describe("PATCH /api/reviews/:review_id", () => {
       .expect(400)
       .send({ inc_votes: "sponge" })
       .then(({ body: { msg } }) => {
-          expect(msg).toBe("bad request");
+        expect(msg).toBe("bad request");
       });
   });
 });
@@ -237,6 +237,26 @@ describe("POST /api/reviews/:review_id/comments", () => {
       })
       .then(({ body: { msg } }) => {
         expect(msg).toBe("bad request");
+      });
+  });
+});
+
+describe("GET /api/users", () => {
+  test("200: successfully responds with array of user objects", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: { users } }) => {
+        expect(users.length).toBe(4);
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
       });
   });
 });

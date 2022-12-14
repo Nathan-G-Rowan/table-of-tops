@@ -8,6 +8,8 @@ const {
 
   getCommentsByReviewId,
   postComment,
+
+  getUsers
 } = require("./controllers/app.controllers");
 const {
   handle404Paths,
@@ -28,6 +30,8 @@ app.patch("/api/reviews/:review_id", patchReview);
 
 app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
 app.post("/api/reviews/:review_id/comments", postComment);
+
+app.get("/api/users", getUsers)
 
 app.all("*", handle404Paths);
 
