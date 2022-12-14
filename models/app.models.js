@@ -10,19 +10,26 @@ exports.selectCategories = () => {
   return db.query(categorySQLStr).then((categories) => categories.rows);
 };
 
-exports.selectReviews = (category, sort_by = "created_at") => {
-  const argArr = [""];
-  let args = 0;
+exports.selectReviews = (category, sort_by = "created_at", order = "desc") => {
+  const argArr = [];
+  let categoryInsert = category ? `WHERE reviews.category = $1` : "";
+  if (category) argArr.push(category);
 
-  let categoryInsert = "";
-  if (category) {
-    if (args === 0) argArr.push([]);
-    args++;
-    categoryInsert = "WHERE category = $" + args;
-    argArr[1].push(category);
-  }
+  const validSortColumns = [
+    "title",
+    "category",
+    "designer",
+    "owner",
+    "created_at",
+    "votes",
+  ];
+  const sortByInsert = validSortColumns.includes(sort_by)
+    ? `reviews.${sort_by}`
+    : `reviews.created_at`;
 
-  argArr[0] = `
+  const orderInsert = order.toUpperCase() === "ASC" ? "ASC" : "DESC";
+
+  const reviewSQL = `
     SELECT
       reviews.*,
       CAST( 
@@ -34,9 +41,9 @@ exports.selectReviews = (category, sort_by = "created_at") => {
       ON comments.review_id = reviews.review_id
     ${categoryInsert}
     GROUP BY reviews.review_id
-    ORDER BY reviews.created_at DESC
+    ORDER BY ${sortByInsert} ${orderInsert}
   ;`;
-  return db.query(...argArr).then((reviews) => reviews.rows);
+  return db.query(reviewSQL, argArr).then((reviews) => reviews.rows);
 };
 exports.selectReviewById = (id) => {
   let reviewSQLStr = `
@@ -51,7 +58,7 @@ exports.selectReviewById = (id) => {
 };
 exports.updateReview = (id, incVotes) => {
   if (!incVotes) return Promise.reject(badRequestErrorObj);
-  
+
   let reviewSQLStr = `
     UPDATE reviews
     SET votes = votes + $1
@@ -91,5 +98,4 @@ exports.selectUsers = () => {
     FROM users
   ;`;
   return db.query(userSQLStr).then((users) => users.rows);
-
-}
+};

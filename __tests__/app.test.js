@@ -74,13 +74,13 @@ describe("GET /api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then(({ body: { reviews } }) => {
-        expect(reviews).toBeSortedBy(reviews.created_at, {
+        expect(reviews).toBeSortedBy("created_at", {
           descending: true,
           coerce: true,
         });
       });
   });
-  describe.only("Queries", () => {
+  describe("Queries", () => {
     describe("Category", () => {
       test("200: Filter by specified category", () => {
         return request(app)
@@ -105,17 +105,41 @@ describe("GET /api/reviews", () => {
     describe("Sort_by", () => {
       test("200: retrieves all reviews in order of specified column", () => {
         return request(app)
-          .get("/api/reviews?sort_by=title")
+          .get("/api/reviews?sort_by=votes")
           .expect(200)
           .then(({ body: { reviews } }) => {
-            console.log(reviews);
-            expect(reviews).toBeSorted({ key: 'title' });
+            expect(reviews).toBeSorted({ key: "votes", descending: true });
           });
       });
+      test("200: does not allow SQL injection", () => {
+        return request(app).get("/api/reviews?sort_by=votes ;").expect(200);
+      });
+    });
+    describe("order", () => {
+      test("200: can set order to ascend", () => {
+        return request(app)
+          .get("/api/reviews?order=asc")
+          .expect(200)
+          .then(({ body: { reviews } }) => {
+            expect(reviews).toBeSorted({ key: "created_at" });
+          });
+      });
+      test("200: does not allow SQL injection", () => {
+        return request(app).get("/api/reviews?order=asc ;").expect(200);
+      });
+    });
+    test("200: all queries work in conjunction", () => {
+      return request(app)
+        .get("/api/reviews?category=social deduction&sort_by=votes&order=asc")
+        .expect(200)
+        .then(({ body: { reviews } }) => {
+          expect(reviews.length).toBe(11);
+
+          expect(reviews).toBeSorted({ key: "votes" });
+        });
     });
   });
 });
-
 describe("GET /api/reviews/:review_id", () => {
   test("200: retrieves reviews from valid id", () => {
     return request(app)

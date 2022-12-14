@@ -12,15 +12,18 @@ const {
 } = require("../models/app.models");
 
 exports.getCategories = (request, response, next) => {
-  selectCategories().then((categories) => {
-    response.status(200).send({ categories });
-  })
-  .catch(next);
+  selectCategories()
+    .then((categories) => {
+      response.status(200).send({ categories });
+    })
+    .catch(next);
 };
 
 exports.getReviews = (request, response, next) => {
   const categoryQuery = request.query.category;
-  selectReviews(categoryQuery)
+  const sortByQuery = request.query.sort_by;
+  const orderQuery = request.query.order;
+  selectReviews(categoryQuery, sortByQuery, orderQuery)
     .then((reviews) => {
       response.status(200).send({ reviews });
     })
