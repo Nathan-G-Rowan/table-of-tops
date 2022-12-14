@@ -1,5 +1,8 @@
 const db = require("../db/connection");
 
+const notFoundErrorObj = { status: 404, msg: "not found" };
+const badRequestErrorObj = { status: 400, msg: "bad request" };
+
 exports.selectCategories = () => {
   let categorySQLStr = `
       SELECT * FROM categories
@@ -35,17 +38,29 @@ exports.selectReviews = (category, sort_by = "created_at") => {
   ;`;
   return db.query(...argArr).then((reviews) => reviews.rows);
 };
-
 exports.selectReviewById = (id) => {
   let reviewSQLStr = `
     SELECT * FROM reviews
     WHERE review_id = $1
   ;`;
   return db.query(reviewSQLStr, [id]).then((reviews) => {
-    if (reviews.rows.length === 0) {
-      return Promise.reject({ status: 404, msg: "not found" });
-    }
+    if (reviews.rows.length === 0) return Promise.reject(notFoundErrorObj);
+
     return reviews.rows[0];
+  });
+};
+exports.updateReview = (id, incVotes) => {
+  if (!incVotes) return Promise.reject(badRequestErrorObj);
+  
+  let reviewSQLStr = `
+    UPDATE reviews
+    SET votes = votes + $1
+    WHERE review_id = $2
+    RETURNING *
+  ;`;
+  return db.query(reviewSQLStr, [incVotes, id]).then((review) => {
+    if (review.rows.length === 0) return Promise.reject(notFoundErrorObj);
+    else return review.rows[0];
   });
 };
 
@@ -56,7 +71,6 @@ exports.selectCommentsByReviewId = (id) => {
   ;`;
   return db.query(reviewSQLStr, [id]).then((comments) => comments.rows);
 };
-
 exports.insertComment = (id, postBody) => {
   const commentTime = new Date(Date.now());
 
@@ -70,3 +84,12 @@ exports.insertComment = (id, postBody) => {
     .query(commentInsertSQLStr, inputArr)
     .then((comments) => comments.rows[0]);
 };
+
+exports.selectUsers = () => {
+  let userSQLStr = `
+    SELECT * 
+    FROM users
+  ;`;
+  return db.query(userSQLStr).then((users) => users.rows);
+
+}
