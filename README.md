@@ -1,4 +1,8 @@
-# Northcoders House of Games API
+# Northcoders Table of Tops API
+website URL: https://table-of-tops.onrender.com/
+
+# Summary
+this project is an api for making reviews of tabletop games, including a comments and voting system. The api interacts with the database through http methods.
 
 If cloning this repo with the intent to run, you must create two .env files for this project:
 .env.test: PGDATABASE=nc_games_test
