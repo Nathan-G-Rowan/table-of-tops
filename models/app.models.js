@@ -23,11 +23,13 @@ exports.selectReviews = (category, sort_by = "created_at", order = "desc") => {
     "created_at",
     "votes",
   ];
-  const sortByInsert = validSortColumns.includes(sort_by)
-    ? `reviews.${sort_by}`
-    : `reviews.created_at`;
+  if (!validSortColumns.includes(sort_by))
+    return Promise.reject(badRequestErrorObj);
+  const sortByInsert = `reviews.${sort_by}`;
 
-  const orderInsert = order.toUpperCase() === "ASC" ? "ASC" : "DESC";
+  if (order.toUpperCase() !== "ASC" && order.toUpperCase() !== "DESC")
+    return Promise.reject(badRequestErrorObj);
+  const orderInsert = order.toUpperCase();
 
   const reviewSQL = `
     SELECT
