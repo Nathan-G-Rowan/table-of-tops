@@ -82,7 +82,7 @@ describe("GET /api/reviews", () => {
   });
   describe("Queries", () => {
     describe("Category", () => {
-      test("200: Filter by specified category", () => {
+      test("200: Query by specified category", () => {
         return request(app)
           .get("/api/reviews?category=social deduction")
           .expect(200)
@@ -93,21 +93,16 @@ describe("GET /api/reviews", () => {
             });
           });
       });
-      test("200: filtering by a category that has no reviews returns an empty array", () => {
+      test("200: querying by a category that has no reviews returns an empty array", () => {
         return request(app)
-          .get("/api/reviews?category=drinking")
+          .get("/api/reviews?category=children's games")
           .expect(200)
           .then(({ body: { reviews } }) => {
             expect(reviews).toEqual([]);
           });
       });
-      test("200: does not allow SQL injection", () => {
-        return request(app)
-          .get("/api/reviews?category=euro game ;")
-          .expect(200)
-          .then(({ body: { reviews } }) => {
-            expect(reviews).toEqual([]);
-          });
+      test("404: querying by a non existent category", () => {
+        return request(app).get("/api/reviews?category=drinking").expect(404);
       });
     });
     describe("Sort_by", () => {
@@ -122,9 +117,6 @@ describe("GET /api/reviews", () => {
       test("400: sorting by a non existent column returns bad request", () => {
         return request(app).get("/api/reviews?sort_by=radness").expect(400);
       });
-      test("400: does not allow SQL injection", () => {
-        return request(app).get("/api/reviews?sort_by=votes ;").expect(400);
-      });
     });
     describe("order", () => {
       test("200: can set order to ascend", () => {
@@ -134,9 +126,6 @@ describe("GET /api/reviews", () => {
           .then(({ body: { reviews } }) => {
             expect(reviews).toBeSorted({ key: "created_at" });
           });
-      });
-      test("400: does not allow SQL injection", () => {
-        return request(app).get("/api/reviews?order=asc ;").expect(400);
       });
       test("400: ordering by anything other than asc or desc returns bad request", () => {
         return request(app).get("/api/reviews?order=horizontally").expect(400);
