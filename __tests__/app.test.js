@@ -18,6 +18,17 @@ describe("undefined paths", () => {
   });
 });
 
+describe.only("GET /api", () => {
+  test("returns endpoints object", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then((response) => {
+        expect(response.endpoints).toBeInstanceOf(Object);
+      });
+  });
+});
+
 describe("GET /api/categories", () => {
   test("200: retrieves categories", () => {
     return request(app)
