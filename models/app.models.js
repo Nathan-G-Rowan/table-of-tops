@@ -49,8 +49,17 @@ exports.selectReviews = (category, sort_by = "created_at", order = "desc") => {
 };
 exports.selectReviewById = (id) => {
   let reviewSQLStr = `
-    SELECT * FROM reviews
-    WHERE review_id = $1
+    SELECT
+      reviews.*,
+      CAST( 
+        COUNT(comments.comment_id)
+        AS int)
+        AS comment_count
+    FROM reviews
+    LEFT JOIN comments
+      ON comments.review_id = reviews.review_id
+    WHERE reviews.review_id = $1
+    GROUP BY reviews.review_id
   ;`;
   return db.query(reviewSQLStr, [id]).then((reviews) => {
     if (reviews.rows.length === 0) return Promise.reject(notFoundErrorObj);
