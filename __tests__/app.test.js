@@ -18,7 +18,7 @@ describe("undefined paths", () => {
   });
 });
 
-describe.only("GET /api", () => {
+describe("GET /api", () => {
   test("200: returns endpoints object", () => {
     return request(app)
       .get("/api")

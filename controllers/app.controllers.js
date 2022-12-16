@@ -1,6 +1,5 @@
+const fs = require("fs/promises");
 const {
-  readEndpoints,
-
   selectCategories,
 
   selectReviews,
@@ -15,7 +14,7 @@ const {
 } = require("../models/app.models");
 
 exports.getEndpoints = (request, response, next) => {
-  readEndpoints()
+  fs.readFile(__dirname + "/../endpoints.json", "utf8")
     .then((endpoints) => {
       response.status(200).send({ endpoints });
     })
