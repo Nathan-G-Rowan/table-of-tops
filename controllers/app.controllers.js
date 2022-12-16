@@ -11,11 +11,13 @@ const {
   deleteComment,
 
   selectUsers,
+  selectUserById,
 } = require("../models/app.models");
 
 exports.getEndpoints = (request, response, next) => {
   fs.readFile(__dirname + "/../endpoints.json", "utf8")
-    .then((endpoints) => {
+    .then((endpointsString) => {
+      const endpoints = JSON.parse(endpointsString);
       response.status(200).send({ endpoints });
     })
     .catch(next);
@@ -104,6 +106,13 @@ exports.getUsers = (request, response, next) => {
   selectUsers()
     .then((users) => {
       response.status(200).send({ users });
+    })
+    .catch(next);
+};
+exports.getUserById = (request, response, next) => {
+  selectUserById(request.params.username)
+    .then((user) => {
+      response.status(200).send({ user });
     })
     .catch(next);
 };

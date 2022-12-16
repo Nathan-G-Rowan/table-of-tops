@@ -121,3 +121,13 @@ exports.selectUsers = () => {
   ;`;
   return db.query(userSQLStr).then((users) => users.rows);
 };
+exports.selectUserById = (id) => {
+  const userSelectSQL = `
+    SELECT * FROM users
+    WHERE users.username = $1
+  ;`;
+  return db.query(userSelectSQL, [id]).then(({ rows: users }) => {
+    if (users.length === 0) return Promise.reject(notFoundErrorObj);
+    return users[0];
+  });
+};
