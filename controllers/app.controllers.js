@@ -5,6 +5,7 @@ const {
   selectReviews,
   selectReviewById,
   updateReview,
+  insertReview,
 
   selectCommentsByReviewId,
   insertComment,
@@ -72,6 +73,13 @@ exports.patchReview = (request, response, next) => {
     })
     .catch(next);
 };
+exports.postReview = (request, response, next) => {
+  insertReview(request.body)
+    .then((review) => {
+      response.status(201).send({ review });
+    })
+    .catch(next);
+};
 
 exports.getCommentsByReviewId = (request, response, next) => {
   const reviewId = request.params.review_id;
@@ -108,7 +116,7 @@ exports.patchCommentById = (request, response, next) => {
       response.status(200).send({ comment });
     })
     .catch(next);
-}
+};
 
 exports.getUsers = (request, response, next) => {
   selectUsers()

@@ -230,6 +230,62 @@ describe("PATCH /api/reviews/:review_id", () => {
       });
   });
 });
+describe.only("POST /api/reviews", () => {
+  test("201: Successfully posted new review", () => {
+    return request(app)
+      .post("/api/reviews")
+      .expect(201)
+      .send({
+        owner: "mallionaire",
+        title: "The Keeyp",
+        review_body: "YES, this is a game, look at it, wowowow.",
+        designer: "Firith Studio",
+        category: "children's games",
+      })
+      .then(({ body: { review } }) => {
+        expect(review).toEqual({
+          review_id: expect.any(Number),
+          title: "The Keeyp",
+          category: "children's games",
+          designer: "Firith Studio",
+          owner: "mallionaire",
+          review_body: "YES, this is a game, look at it, wowowow.",
+          review_img_url: expect.any(String),
+          created_at: expect.any(String),
+          votes: 0,
+        });
+      });
+  });
+  test("400: missing properties", () => {
+    return request(app)
+      .post("/api/reviews")
+      .expect(400)
+      .send({
+        owner: "mallionaire",
+        review_body: "YES, this is a game, look at it, wowowow.",
+        designer: "Firith Studio",
+        category: "children's games",
+      })
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("bad request");
+      });
+  });
+  test("400: invalid keys", () => {
+    return request(app)
+      .post("/api/reviews")
+      .expect(400)
+      .send({
+        owner: "stewysteveofnumanor",
+        title: "The Keeyp",
+        review_body: "YES, this is a game, look at it, wowowow.",
+        designer: "Firith Studio",
+        category: "children's games",
+      })
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("bad request");
+      });
+  });
+});
 
 describe("GET /api/reviews/:review_id/comments", () => {
   test("200: retrieves list of comments from specified review", () => {

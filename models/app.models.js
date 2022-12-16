@@ -80,6 +80,25 @@ exports.updateReview = (id, incVotes) => {
     else return review[0];
   });
 };
+exports.insertReview = (postBody) => {
+  const reviewInsertSQL = `
+    INSERT INTO reviews (owner, title, review_body, designer, category)
+    VALUES ($1, $2, $3, $4, $5) RETURNING *
+  ;`;
+  inputArr = [
+    postBody.owner,
+    postBody.title,
+    postBody.review_body,
+    postBody.designer,
+    postBody.category,
+  ];
+
+  if (inputArr.includes(undefined)) return Promise.reject(badRequestErrorObj);
+
+  return db
+    .query(reviewInsertSQL, inputArr)
+    .then(({ rows: review }) => review[0]);
+};
 
 exports.selectCommentsByReviewId = (id) => {
   let reviewSQLStr = `
@@ -92,10 +111,10 @@ exports.insertComment = (id, postBody) => {
   const commentTime = new Date(Date.now());
 
   let commentInsertSQLStr = `
-    INSERT INTO comments (body, author, review_id, votes, created_at)
-    VALUES ($1, $2, $3, $4, $5) RETURNING *
+    INSERT INTO comments (body, author, review_id)
+    VALUES ($1, $2, $3) RETURNING *
   ;`;
-  inputArr = [postBody.body, postBody.username, id, 0, commentTime];
+  inputArr = [postBody.body, postBody.username, id];
 
   return db
     .query(commentInsertSQLStr, inputArr)

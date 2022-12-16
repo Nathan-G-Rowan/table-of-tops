@@ -3,12 +3,13 @@ const {
   getReviews,
   getReviewById,
   patchReview,
+  postReview,
 
   getCommentsByReviewId,
   postComment,
 } = require("../controllers/app.controllers");
 
-reviewRouter.get("/", getReviews);
+reviewRouter.route("/").get(getReviews).post(postReview);
 
 reviewRouter.route("/:review_id").get(getReviewById).patch(patchReview);
 
