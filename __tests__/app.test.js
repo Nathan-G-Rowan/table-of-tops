@@ -356,7 +356,7 @@ describe("GET /api/users", () => {
       });
   });
 });
-describe.only("GET /api/users/:username", () => {
+describe("GET /api/users/:username", () => {
   test("200: responds with user object", () => {
     return request(app)
       .get("/api/users/mallionaire")
