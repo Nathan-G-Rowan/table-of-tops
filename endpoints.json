@@ -46,7 +46,7 @@
     }
   },
   "PATCH /api/reviews/:review_id": {
-    "description": "increments the votes of the :review_id review, requires a request body object with a 'inc_votes' key and a numeric value. Returns the updated review object",
+    "description": "when passed a request body formatted as '{ inc_votes: X }', where X is a number, increments the votes of the :review_id review by X.",
     "exampleRequest": { "inc_votes": 4 },
     "exampleResponse": {
       "review": {
@@ -85,6 +85,10 @@
         "created_at": "1616854538230"
       }
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes the comment with comment_id from the database",
+    "exampleResponse": {}
   },
   "GET /api/users": {
     "description": "returns a list of all users",

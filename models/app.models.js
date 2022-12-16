@@ -1,7 +1,15 @@
 const db = require("../db/connection");
+const fs = require("fs/promises");
 
 const notFoundErrorObj = { status: 404, msg: "not found" };
 const badRequestErrorObj = { status: 400, msg: "bad request" };
+
+exports.readEndpoints = () => {
+  return fs.readFile(__dirname + "/../endpoints.json", "utf8")
+  .then((endpoints) => {
+    return endpoints;
+  });
+};
 
 exports.selectCategories = () => {
   let categorySQLStr = `

@@ -19,12 +19,12 @@ describe("undefined paths", () => {
 });
 
 describe.only("GET /api", () => {
-  test("returns endpoints object", () => {
+  test("200: returns endpoints object", () => {
     return request(app)
       .get("/api")
       .expect(200)
-      .then((response) => {
-        expect(response.endpoints).toBeInstanceOf(Object);
+      .then(({ body }) => {
+        expect(body.endpoints).not.toBe(undefined);
       });
   });
 });
