@@ -86,7 +86,7 @@ exports.postComment = (request, response, next) => {
 exports.deleteCommentById = (request, response, next) => {
   deleteComment(request.params.comment_id)
     .then(() => {
-      response.status(204).send();
+      response.sendStatus(204);
     })
     .catch(next);
 };

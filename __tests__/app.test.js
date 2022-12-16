@@ -309,10 +309,20 @@ describe("DELETE /api/comments/comment_id", () => {
     return request(app).delete("/api/comments/2").expect(204);
   });
   test("404: comment id is not present", () => {
-    return request(app).delete("/api/comments/-1").expect(404);
+    return request(app)
+      .delete("/api/comments/-1")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("not found");
+      });
   });
   test("400: comment id of wrong type", () => {
-    return request(app).delete("/api/comments/sponge").expect(400);
+    return request(app)
+      .delete("/api/comments/sponge")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("bad request");
+      });
   });
 });
 
