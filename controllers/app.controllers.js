@@ -9,6 +9,7 @@ const {
   selectCommentsByReviewId,
   insertComment,
   deleteComment,
+  updateComment,
 
   selectUsers,
   selectUserById,
@@ -101,6 +102,13 @@ exports.deleteCommentById = (request, response, next) => {
     })
     .catch(next);
 };
+exports.patchCommentById = (request, response, next) => {
+  updateComment(request.params.comment_id, request.body.inc_votes)
+    .then((comment) => {
+      response.status(200).send({ comment });
+    })
+    .catch(next);
+}
 
 exports.getUsers = (request, response, next) => {
   selectUsers()

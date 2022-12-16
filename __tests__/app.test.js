@@ -23,8 +23,8 @@ describe("GET /api", () => {
     return request(app)
       .get("/api")
       .expect(200)
-      .then(({ body }) => {
-        expect(body.endpoints).not.toBe(undefined);
+      .then(({ body: { endpoints } }) => {
+        expect(endpoints).toBeInstanceOf(Object);
       });
   });
 });
@@ -315,7 +315,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
       });
   });
 });
-describe("DELETE /api/comments/comment_id", () => {
+describe("DELETE /api/comments/:comment_id", () => {
   test("204: comment successfully deleted", () => {
     return request(app).delete("/api/comments/2").expect(204);
   });
@@ -331,6 +331,44 @@ describe("DELETE /api/comments/comment_id", () => {
     return request(app)
       .delete("/api/comments/sponge")
       .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("bad request");
+      });
+  });
+});
+describe("PATCH /api/comments/:comment_id", () => {
+  test("200: successfully increments votes", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .expect(200)
+      .send({ inc_votes: 2 })
+      .then(({ body: { comment } }) => {
+        expect(comment.votes).toBe(18);
+      });
+  });
+  test("404: comment not found", () => {
+    return request(app)
+      .patch("/api/comments/-1")
+      .expect(404)
+      .send({ inc_votes: 2 })
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("not found");
+      });
+  });
+  test("400: request object missing inc_votes", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .expect(400)
+      .send({ inc_otes: 2 })
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("bad request");
+      });
+  });
+  test("400: inc_votes of invalid type", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .expect(400)
+      .send({ inc_votes: "sponge" })
       .then(({ body: { msg } }) => {
         expect(msg).toBe("bad request");
       });
@@ -375,7 +413,7 @@ describe("GET /api/users/:username", () => {
       .get("/api/users/stewysteveofnumanor")
       .expect(404)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("not found")
+        expect(msg).toBe("not found");
       });
-  })
+  });
 });

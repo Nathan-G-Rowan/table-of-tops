@@ -60,10 +60,10 @@ exports.selectReviewById = (id) => {
     WHERE reviews.review_id = $1
     GROUP BY reviews.review_id
   ;`;
-  return db.query(reviewSQLStr, [id]).then((reviews) => {
-    if (reviews.rows.length === 0) return Promise.reject(notFoundErrorObj);
+  return db.query(reviewSQLStr, [id]).then(({ rows: reviews }) => {
+    if (reviews.length === 0) return Promise.reject(notFoundErrorObj);
 
-    return reviews.rows[0];
+    return reviews[0];
   });
 };
 exports.updateReview = (id, incVotes) => {
@@ -75,9 +75,9 @@ exports.updateReview = (id, incVotes) => {
     WHERE review_id = $2
     RETURNING *
   ;`;
-  return db.query(reviewSQLStr, [incVotes, id]).then((review) => {
-    if (review.rows.length === 0) return Promise.reject(notFoundErrorObj);
-    else return review.rows[0];
+  return db.query(reviewSQLStr, [incVotes, id]).then(({ rows: review }) => {
+    if (review.length === 0) return Promise.reject(notFoundErrorObj);
+    else return review[0];
   });
 };
 
@@ -109,9 +109,26 @@ exports.deleteComment = (id) => {
   WHERE comment_id = $1
   RETURNING *
   ;`;
-  return db.query(deleteCommentSQL, [id]).then((removed) => {
-    if (removed.rows.length === 0) return Promise.reject(notFoundErrorObj);
+  return db.query(deleteCommentSQL, [id]).then(({ rows: removed }) => {
+    if (removed.length === 0) return Promise.reject(notFoundErrorObj);
+    return;
   });
+};
+exports.updateComment = (id, incVotes) => {
+  if (!incVotes) return Promise.reject(badRequestErrorObj);
+
+  let commentUpdateSQL = `
+    UPDATE comments
+    SET votes = votes + $1
+    WHERE comment_id = $2
+    RETURNING *
+  ;`;
+  return db
+    .query(commentUpdateSQL, [incVotes, id])
+    .then(({ rows: comment }) => {
+      if (comment.length === 0) return Promise.reject(notFoundErrorObj);
+      return comment[0];
+    });
 };
 
 exports.selectUsers = () => {
