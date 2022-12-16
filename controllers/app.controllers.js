@@ -12,16 +12,38 @@ const {
 } = require("../models/app.models");
 
 exports.getCategories = (request, response, next) => {
-  selectCategories().then((categories) => {
-    response.status(200).send({ categories });
-  })
-  .catch(next);
+  selectCategories()
+    .then((categories) => {
+      response.status(200).send({ categories });
+    })
+    .catch(next);
 };
 
 exports.getReviews = (request, response, next) => {
-  selectReviews().then((reviews) => {
-    response.status(200).send({ reviews });
-  });
+  const categoryQuery = request.query.category;
+  const sortByQuery = request.query.sort_by;
+  const orderQuery = request.query.order;
+
+  const promises = [];
+  promises.push(selectReviews(categoryQuery, sortByQuery, orderQuery));
+
+  if (categoryQuery) {
+    promises.push(selectCategories());
+  }
+
+  Promise.all(promises)
+    .then(([reviews, categories]) => {
+      if (categoryQuery) {
+        const matchingCategories = categories.filter(
+          (category) => category.slug === categoryQuery
+        );
+        if (matchingCategories.length === 0)
+          return Promise.reject({ status: 404, msg: "not found" });
+      }
+
+      response.status(200).send({ reviews });
+    })
+    .catch(next);
 };
 exports.getReviewById = (request, response, next) => {
   selectReviewById(request.params.review_id)
