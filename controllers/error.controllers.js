@@ -8,7 +8,8 @@ exports.handleCustomError = (error, request, response, next) => {
   else next(error);
 };
 exports.handleSQLError = (error, request, response, next) => {
-  if ((error.code == "22P02")) {
+  const badRequestCodes = ["22P02", "23503"]
+  if (badRequestCodes.includes(error.code)) {
     response.status(400).send({ msg: "bad request" });
   } else next(error);
 };

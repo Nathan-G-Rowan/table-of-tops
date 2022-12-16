@@ -10,7 +10,7 @@ afterAll(() => db.end());
 describe("undefined paths", () => {
   test("404: Path not Found", () => {
     return request(app)
-      .get("/beApi")
+      .get("/api/unexistingroute")
       .expect(404)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("path not found");
