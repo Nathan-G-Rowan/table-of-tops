@@ -170,6 +170,7 @@ describe("GET /api/reviews/:review_id", () => {
             created_at: expect.any(String),
             votes: expect.any(Number),
             designer: expect.any(String),
+            comment_count: expect.any(Number),
           })
         );
       });
@@ -309,6 +310,27 @@ describe("POST /api/reviews/:review_id/comments", () => {
         body: "Can't stand this game.",
         username: "toastghoast",
       })
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("bad request");
+      });
+  });
+});
+describe("DELETE /api/comments/comment_id", () => {
+  test("204: comment successfully deleted", () => {
+    return request(app).delete("/api/comments/2").expect(204);
+  });
+  test("404: comment id is not present", () => {
+    return request(app)
+      .delete("/api/comments/-1")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("not found");
+      });
+  });
+  test("400: comment id of wrong type", () => {
+    return request(app)
+      .delete("/api/comments/sponge")
+      .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("bad request");
       });

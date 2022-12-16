@@ -7,6 +7,7 @@ const {
 
   selectCommentsByReviewId,
   insertComment,
+  deleteComment,
 
   selectUsers,
 } = require("../models/app.models");
@@ -79,6 +80,13 @@ exports.postComment = (request, response, next) => {
   insertComment(reviewId, request.body)
     .then((comment) => {
       response.status(201).send({ comment });
+    })
+    .catch(next);
+};
+exports.deleteCommentById = (request, response, next) => {
+  deleteComment(request.params.comment_id)
+    .then(() => {
+      response.sendStatus(204);
     })
     .catch(next);
 };
