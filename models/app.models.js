@@ -105,7 +105,7 @@ exports.insertComment = (id, postBody) => {
 exports.deleteComment = (id) => {
   if (Number(id) === NaN) return Promise.reject(badRequestErrorObj);
 
-  let deleteCommentSQL = `
+  const deleteCommentSQL = `
   DELETE FROM comments
   WHERE comment_id = $1
   RETURNING *
