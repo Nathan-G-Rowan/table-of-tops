@@ -247,6 +247,9 @@ describe("DELETE /api/comments/comment_id", () => {
   test("404: comment id is not present", () => {
     return request(app).delete("/api/comments/-1").expect(404);
   });
+  test("400: comment id of wrong type", () => {
+    return request(app).delete("/api/comments/sponge").expect(400);
+  });
 });
 
 describe("GET /api/users", () => {
